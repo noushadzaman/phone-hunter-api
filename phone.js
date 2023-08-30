@@ -1,6 +1,6 @@
-const loadPhone = async () => {
+const loadPhone = async (searchText) => {
   const data = await fetch(
-    "https://openapi.programming-hero.com/api/phones?search=iphone"
+    `https://openapi.programming-hero.com/api/phones?search=${searchText}`
   )
     .then((res) => res.json())
     .then((data) => displayPhones(data.data));
@@ -8,8 +8,17 @@ const loadPhone = async () => {
 
 const displayPhones = (phones) => {
   const phoneContainer = document.getElementById("phone-container");
-  phones.forEach((phone) => {
-    console.log(phone);
+  phoneContainer.innerHTML = "";
+
+  const showAllContainer = document.getElementById("show-all-container");
+  if (phones.length > 6) {
+    showAllContainer.classList.remove("hidden");
+  } else {
+    showAllContainer.classList.add("hidden");
+  }
+
+  console.log(phones.length);
+  phones.slice(0, 6).forEach((phone) => {
     const phoneCard = document.createElement("div");
     phoneCard.classList = `card w-96 bg-gray-100 shadow-xl`;
     phoneCard.innerHTML = `
@@ -18,7 +27,6 @@ const displayPhones = (phones) => {
     </figure>
     <div class="card-body">
     <h2 class="card-title">${phone.phone_name}</h2>
-    <p>If a dog chews shoes whose shoes does he choose?</p>
         <div class="card-actions justify-center">
             <button class="btn btn-primary">Buy Now</button>
         </div>
@@ -26,6 +34,21 @@ const displayPhones = (phones) => {
     `;
     phoneContainer.appendChild(phoneCard);
   });
+  toggleLoadingSpinner(false);
 };
 
-loadPhone();
+const handleSearch = () => {
+  toggleLoadingSpinner(true);
+  const searchField = document.getElementById("search-field");
+  const searchText = searchField.value;
+  loadPhone(searchText);
+};
+
+const toggleLoadingSpinner = (isLoading) => {
+  const loadingSpinner = document.getElementById("loading-spinner");
+  if (isLoading) {
+    loadingSpinner.classList.remove("hidden");
+  } else {
+    loadingSpinner.classList.add("hidden");
+  }
+};
