@@ -1,24 +1,25 @@
-const loadPhone = async (searchText) => {
+const loadPhone = async (searchText, isShowAll) => {
   const data = await fetch(
     `https://openapi.programming-hero.com/api/phones?search=${searchText}`
   )
     .then((res) => res.json())
-    .then((data) => displayPhones(data.data));
+    .then((data) => displayPhones(data.data, isShowAll));
 };
 
-const displayPhones = (phones) => {
+const displayPhones = (phones, isShowAll) => {
   const phoneContainer = document.getElementById("phone-container");
   phoneContainer.innerHTML = "";
 
   const showAllContainer = document.getElementById("show-all-container");
-  if (phones.length > 6) {
+  if (phones.length > 6 && !isShowAll) {
     showAllContainer.classList.remove("hidden");
   } else {
     showAllContainer.classList.add("hidden");
   }
-
-  console.log(phones.length);
-  phones.slice(0, 6).forEach((phone) => {
+  if (!isShowAll) {
+    phones = phones.slice(0, 6);
+  }
+  phones.forEach((phone) => {
     const phoneCard = document.createElement("div");
     phoneCard.classList = `card w-96 bg-gray-100 shadow-xl`;
     phoneCard.innerHTML = `
@@ -28,7 +29,7 @@ const displayPhones = (phones) => {
     <div class="card-body">
     <h2 class="card-title">${phone.phone_name}</h2>
         <div class="card-actions justify-center">
-            <button class="btn btn-primary">Buy Now</button>
+            <button class="btn btn-primary">Show Details</button>
         </div>
     </div>
     `;
@@ -37,11 +38,11 @@ const displayPhones = (phones) => {
   toggleLoadingSpinner(false);
 };
 
-const handleSearch = () => {
+const handleSearch = (isShowAll) => {
   toggleLoadingSpinner(true);
   const searchField = document.getElementById("search-field");
   const searchText = searchField.value;
-  loadPhone(searchText);
+  loadPhone(searchText, isShowAll);
 };
 
 const toggleLoadingSpinner = (isLoading) => {
@@ -51,4 +52,8 @@ const toggleLoadingSpinner = (isLoading) => {
   } else {
     loadingSpinner.classList.add("hidden");
   }
+};
+
+const handleShowAll = () => {
+  handleSearch(true);
 };
