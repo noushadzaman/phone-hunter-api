@@ -76,7 +76,7 @@ const showPhoneDetails = (phone) => {
   <p><span>Display Size: </span>${phone?.mainFeatures?.displaySize}</p>
   <p><span>CPU: </span>${phone?.mainFeatures?.chipSet}</p>
   <p><span>Storage: </span>${phone?.mainFeatures?.storage}</p>
-  <p><span>Memory: </span>${phone?.mainFeatures?.memory}</p>
+  <p><span>Memory: </span>${phone.mainFeatures?.memory || 'No Memory available'}</p>
   `;
 
   show_Details_modal.showModal();
